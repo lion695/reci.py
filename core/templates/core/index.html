@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block head_title %}reci.py{% endblock %}
 
@@ -14,6 +15,38 @@
         <div class="col-12">
             <h1>Welcome</h1>
             <p>To reci.py.</p>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12 col-lg-8">
+            <h2>Comments</h2>
+            {% if user.is_authenticated %}
+            <form method="post" class="mb-4">
+                {% csrf_token %}
+                {{ comment_form|crispy }}
+                <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+            {% else %}
+            <p><a href="{% url 'account_login' %}">Log in to comment</a></p>
+            {% endif %}
+
+            {% for comment in comments %}
+            <article class="mb-3 p-3 border rounded">
+                <p class="mb-2">{{ comment.content }}</p>
+                <p class="mb-2 text-muted small">By {{ comment.author.username }}</p>
+                {% if user == comment.author %}
+                <div>
+                    <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <form method="post" action="{% url 'delete_comment' comment.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </div>
+                {% endif %}
+            </article>
+            {% empty %}
+            <p>No comments yet.</p>
+            {% endfor %}
         </div>
     </div>
 </section>

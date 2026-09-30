@@ -23,4 +23,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', core_views.index, name='index'),
     path('profile', core_views.profile, name='profile'),
+    path(
+        'comments/<int:comment_id>/edit/',
+        core_views.edit_comment,
+        name='edit_comment'
+    ),
+    path(
+        'comments/<int:comment_id>/delete/',
+        core_views.delete_comment,
+        name='delete_comment'
+    ),
 ]
